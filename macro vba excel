@@ -1,0 +1,271 @@
+Sub GenererFichierSEPAxml()
+    
+    With Sheet1
+    Dim i As Long
+    Dim nbBeneficiaires As Long
+    Dim montant As Double
+    nbBeneficiaires = Range("A1").CurrentRegion.Rows.Count - 1
+
+
+    'Create a new document
+    Dim xmlDoc As MSXML2.DOMDocument60
+    Set xmlDoc = New MSXML2.DOMDocument60
+    
+    'Add XML header
+    Dim xmlHeader As MSXML2.IXMLDOMProcessingInstruction
+    Set xmlHeader = xmlDoc.createProcessingInstruction("xml", "version=""1.0"" encoding=""UTF-8"" ")
+    xmlDoc.appendChild xmlHeader
+  
+    'Create namespace
+    Dim namespace As String
+    namespace = "urn:iso:std:iso:20022:tech:xsd:pain.001.001.03"
+    
+    'Create root element with namespace
+    Dim rootElement As MSXML2.IXMLDOMElement
+    Set rootElement = xmlDoc.createNode(NODE_ELEMENT, "Document", namespace)
+    xmlDoc.appendChild rootElement
+          
+    'Create CstmrCdtTrfInitn element
+    Dim CstmrCdtTrfInitnElement As MSXML2.IXMLDOMElement
+    Set CstmrCdtTrfInitnElement = xmlDoc.createNode(NODE_ELEMENT, "CstmrCdtTrfInitn", namespace)
+    rootElement.appendChild CstmrCdtTrfInitnElement
+        
+    'Create GrpHdr element
+    Dim GrpHdrElement As MSXML2.IXMLDOMElement
+    Set GrpHdrElement = xmlDoc.createNode(NODE_ELEMENT, "GrpHdr", namespace)
+    CstmrCdtTrfInitnElement.appendChild GrpHdrElement
+        
+    'Add MsgId element
+    Dim MsgIdElement As MSXML2.IXMLDOMElement
+    Set MsgIdElement = xmlDoc.createNode(NODE_ELEMENT, "MsgId", namespace)
+    MsgIdElement.Text = Range("A4").Value
+    GrpHdrElement.appendChild MsgIdElement
+    
+    'Add CreDtTm element
+    Dim CreDtTmElement As MSXML2.IXMLDOMElement
+    Set CreDtTmElement = xmlDoc.createNode(NODE_ELEMENT, "CreDtTm", namespace)
+    CreDtTmElement.Text = Format(Now, "yyyy-mm-ddThh:nn:ss")
+    GrpHdrElement.appendChild CreDtTmElement
+    
+    'Add NbOfTxs element
+    Dim NbOfTxsElement As MSXML2.IXMLDOMElement
+    Set NbOfTxsElement = xmlDoc.createNode(NODE_ELEMENT, "NbOfTxs", namespace)
+    NbOfTxsElement.Text = Range("E10").Value
+    GrpHdrElement.appendChild NbOfTxsElement
+    
+    'Add CtrlSum element
+    Dim CtrlSumElement As MSXML2.IXMLDOMElement
+    Set CtrlSumElement = xmlDoc.createNode(NODE_ELEMENT, "CtrlSum", namespace)
+    CtrlSumElement.Text = Range("D10").Value
+    GrpHdrElement.appendChild CtrlSumElement
+    
+    'Create InitgPty element
+    Dim InitgPtyElement As MSXML2.IXMLDOMElement
+    Set InitgPtyElement = xmlDoc.createNode(NODE_ELEMENT, "InitgPty", namespace)
+    GrpHdrElement.appendChild InitgPtyElement
+    
+    'Add Nm element
+    Dim NmElement As MSXML2.IXMLDOMElement
+    Set NmElement = xmlDoc.createNode(NODE_ELEMENT, "Nm", namespace)
+    NmElement.Text = Range("A10").Value
+    InitgPtyElement.appendChild NmElement
+    
+    'Create PmtInf element
+    Dim PmtInfElement As MSXML2.IXMLDOMElement
+    Set PmtInfElement = xmlDoc.createNode(NODE_ELEMENT, "PmtInf", namespace)
+    CstmrCdtTrfInitnElement.appendChild PmtInfElement
+    
+    'Add PmtInfId element
+    Dim PmtInfIdElement As MSXML2.IXMLDOMElement
+    Set PmtInfIdElement = xmlDoc.createNode(NODE_ELEMENT, "PmtInfId", namespace)
+    PmtInfIdElement.Text = Range("A4").Value
+    PmtInfElement.appendChild PmtInfIdElement
+    
+    'Add PmtMtd element
+    Dim PmtMtdElement As MSXML2.IXMLDOMElement
+    Set PmtMtdElement = xmlDoc.createNode(NODE_ELEMENT, "PmtMtd", namespace)
+    PmtMtdElement.Text = "TRF"
+    PmtInfElement.appendChild PmtMtdElement
+    
+    'Add BtchBookg element
+    Dim BtchBookgElement As MSXML2.IXMLDOMElement
+    Set BtchBookgElement = xmlDoc.createNode(NODE_ELEMENT, "BtchBookg", namespace)
+    BtchBookgElement.Text = "false"
+    PmtInfElement.appendChild BtchBookgElement
+    
+    'Add NbOfTxs2 element
+    Dim NbOfTxs2Element As MSXML2.IXMLDOMElement
+    Set NbOfTxs2Element = xmlDoc.createNode(NODE_ELEMENT, "NbOfTxs", namespace)
+    NbOfTxs2Element.Text = Range("E10").Value
+    PmtInfElement.appendChild NbOfTxs2Element
+    
+    'Add CtrlSum2 element
+    Dim CtrlSum2Element As MSXML2.IXMLDOMElement
+    Set CtrlSum2Element = xmlDoc.createNode(NODE_ELEMENT, "CtrlSum", namespace)
+    CtrlSum2Element.Text = Range("D10").Value
+    PmtInfElement.appendChild CtrlSum2Element
+    
+    'Add PmtTpInf element
+    Dim PmtTpInfElement As MSXML2.IXMLDOMElement
+    Set PmtTpInfElement = xmlDoc.createNode(NODE_ELEMENT, "PmtTpInf", namespace)
+    PmtInfElement.appendChild PmtTpInfElement
+    
+    'Add SvcLvl element
+    Dim SvcLvlElement As MSXML2.IXMLDOMElement
+    Set SvcLvlElement = xmlDoc.createNode(NODE_ELEMENT, "SvcLvl", namespace)
+    PmtTpInfElement.appendChild SvcLvlElement
+    
+    'Add Cd element
+    Dim CdElement As MSXML2.IXMLDOMElement
+    Set CdElement = xmlDoc.createNode(NODE_ELEMENT, "Cd", namespace)
+    CdElement.Text = "SEPA"
+    SvcLvlElement.appendChild CdElement
+    
+    'Add ReqdExctnDt element
+    Dim ReqdExctnDtElement As MSXML2.IXMLDOMElement
+    Set ReqdExctnDtElement = xmlDoc.createNode(NODE_ELEMENT, "ReqdExctnDt", namespace)
+    ReqdExctnDtElement.Text = Format(Now + 1, "yyyy-mm-dd")
+    PmtInfElement.appendChild ReqdExctnDtElement
+    
+    'Add Dbtr element
+    Dim DbtrElement As MSXML2.IXMLDOMElement
+    Set DbtrElement = xmlDoc.createNode(NODE_ELEMENT, "Dbtr", namespace)
+    PmtInfElement.appendChild DbtrElement
+    
+    'Add Nm2 element
+    Dim Nm2Element As MSXML2.IXMLDOMElement
+    Set Nm2Element = xmlDoc.createNode(NODE_ELEMENT, "Nm", namespace)
+    Nm2Element.Text = Range("A10").Value
+    DbtrElement.appendChild Nm2Element
+    
+    'Add DbtrAcct element
+    Dim DbtrAcctElement As MSXML2.IXMLDOMElement
+    Set DbtrAcctElement = xmlDoc.createNode(NODE_ELEMENT, "DbtrAcct", namespace)
+    PmtInfElement.appendChild DbtrAcctElement
+    
+    'Add Id element
+    Dim IdElement As MSXML2.IXMLDOMElement
+    Set IdElement = xmlDoc.createNode(NODE_ELEMENT, "Id", namespace)
+    DbtrAcctElement.appendChild IdElement
+    
+    'Add IBAN element
+    Dim IBANElement As MSXML2.IXMLDOMElement
+    Set IBANElement = xmlDoc.createNode(NODE_ELEMENT, "IBAN", namespace)
+    IBANElement.Text = Range("C10").Value
+    IdElement.appendChild IBANElement
+    
+    'Add DbtrAgt element
+    Dim DbtrAgtElement As MSXML2.IXMLDOMElement
+    Set DbtrAgtElement = xmlDoc.createNode(NODE_ELEMENT, "DbtrAgt", namespace)
+    PmtInfElement.appendChild DbtrAgtElement
+    
+    'Add FinInstnId element
+    Dim FinInstnIdElement As MSXML2.IXMLDOMElement
+    Set FinInstnIdElement = xmlDoc.createNode(NODE_ELEMENT, "FinInstnId", namespace)
+    DbtrAgtElement.appendChild FinInstnIdElement
+    
+    'Add BIC element
+    Dim BICElement As MSXML2.IXMLDOMElement
+    Set BICElement = xmlDoc.createNode(NODE_ELEMENT, "BIC", namespace)
+    BICElement.Text = Range("B10").Value
+    FinInstnIdElement.appendChild BICElement
+      
+
+    'Ajout des bénéficiaires
+        For i = 13 To nbBeneficiaires + 1 'On commence à la deuxième ligne
+        montant = Range("D" & i).Value
+        If montant > 0 Then 'On ne traite que les bénéficiaires avec un montant positif
+            'Création de l'élément "beneficiaire"
+            'Add CdtTrfTxInf element
+            Dim CdtTrfTxInfElement As MSXML2.IXMLDOMElement
+            Set CdtTrfTxInfElement = xmlDoc.createNode(NODE_ELEMENT, "CdtTrfTxInf", namespace)
+            PmtInfElement.appendChild CdtTrfTxInfElement
+            'Add PmtId element
+            Dim PmtIdElement As MSXML2.IXMLDOMElement
+            Set PmtIdElement = xmlDoc.createNode(NODE_ELEMENT, "PmtId", namespace)
+            CdtTrfTxInfElement.appendChild PmtIdElement
+            'Add InstrId element
+            Dim InstrIdElement As MSXML2.IXMLDOMElement
+            Set InstrIdElement = xmlDoc.createNode(NODE_ELEMENT, "InstrId", namespace)
+            InstrIdElement.Text = Range("A4").Value & " " & Range("E" & i).Value
+            PmtIdElement.appendChild InstrIdElement
+            'Add EndToEndId element
+            Dim EndToEndIdElement As MSXML2.IXMLDOMElement
+            Set EndToEndIdElement = xmlDoc.createNode(NODE_ELEMENT, "EndToEndId", namespace)
+            EndToEndIdElement.Text = Left(Range("A" & i).Value, 30) & " " & Left(Range("E" & i).Value, 2)
+            PmtIdElement.appendChild EndToEndIdElement
+            'Add Amt element
+            Dim AmtElement As MSXML2.IXMLDOMElement
+            Set AmtElement = xmlDoc.createNode(NODE_ELEMENT, "Amt", namespace)
+            CdtTrfTxInfElement.appendChild AmtElement
+            'Add InstdAmt Ccy element
+            Dim InstdAmtCcyElement As MSXML2.IXMLDOMElement
+            Set InstdAmtCcyElement = xmlDoc.createNode(NODE_ELEMENT, "InstdAmt", namespace)
+            InstdAmtCcyElement.setAttribute "Ccy", "EUR"
+            InstdAmtCcyElement.Text = Range("D" & i).Value
+            AmtElement.appendChild InstdAmtCcyElement
+            'Add CdtrAgt element
+            Dim CdtrAgtElement As MSXML2.IXMLDOMElement
+            Set CdtrAgtElement = xmlDoc.createNode(NODE_ELEMENT, "CdtrAgt", namespace)
+            CdtTrfTxInfElement.appendChild CdtrAgtElement
+            'Add FinInstnId2 element
+            Dim FinInstnId2Element As MSXML2.IXMLDOMElement
+            Set FinInstnId2Element = xmlDoc.createNode(NODE_ELEMENT, "FinInstnId", namespace)
+            CdtrAgtElement.appendChild FinInstnId2Element
+            'Add BIC2 element
+            Dim BIC2Element As MSXML2.IXMLDOMElement
+            Set BIC2Element = xmlDoc.createNode(NODE_ELEMENT, "BIC", namespace)
+            BIC2Element.Text = Range("B" & i).Value
+            FinInstnId2Element.appendChild BIC2Element
+            'Add Cdtr element
+            Dim CdtrElement As MSXML2.IXMLDOMElement
+            Set CdtrElement = xmlDoc.createNode(NODE_ELEMENT, "Cdtr", namespace)
+            CdtTrfTxInfElement.appendChild CdtrElement
+            'Add Nm3 element
+            Dim Nm3Element As MSXML2.IXMLDOMElement
+            Set Nm3Element = xmlDoc.createNode(NODE_ELEMENT, "Nm", namespace)
+            Nm3Element.Text = Range("A" & i).Value
+            CdtrElement.appendChild Nm3Element
+            'Add CdtrAcct element
+            Dim CdtrAcctElement As MSXML2.IXMLDOMElement
+            Set CdtrAcctElement = xmlDoc.createNode(NODE_ELEMENT, "CdtrAcct", namespace)
+            CdtTrfTxInfElement.appendChild CdtrAcctElement
+            'Add Id2 element
+            Dim Id2Element As MSXML2.IXMLDOMElement
+            Set Id2Element = xmlDoc.createNode(NODE_ELEMENT, "Id", namespace)
+            CdtrAcctElement.appendChild Id2Element
+            'Add IBAN2 element
+            Dim IBAN2Element As MSXML2.IXMLDOMElement
+            Set IBAN2Element = xmlDoc.createNode(NODE_ELEMENT, "IBAN", namespace)
+            IBAN2Element.Text = Range("C" & i).Value
+            Id2Element.appendChild IBAN2Element
+            'Add RgltryRptg element
+            Dim RgltryRptgElement As MSXML2.IXMLDOMElement
+            Set RgltryRptgElement = xmlDoc.createNode(NODE_ELEMENT, "RgltryRptg", namespace)
+            CdtTrfTxInfElement.appendChild RgltryRptgElement
+            'Add Dtls element
+            Dim DtlsElement As MSXML2.IXMLDOMElement
+            Set DtlsElement = xmlDoc.createNode(NODE_ELEMENT, "Dtls", namespace)
+            RgltryRptgElement.appendChild DtlsElement
+            'Add RmtInf element
+            Dim RmtInfElement As MSXML2.IXMLDOMElement
+            Set RmtInfElement = xmlDoc.createNode(NODE_ELEMENT, "RmtInf", namespace)
+            CdtTrfTxInfElement.appendChild RmtInfElement
+            'Add Ustrd element
+            Dim UstrdElement As MSXML2.IXMLDOMElement
+            Set UstrdElement = xmlDoc.createNode(NODE_ELEMENT, "Ustrd", namespace)
+            UstrdElement.Text = Range("A4").Value
+            RmtInfElement.appendChild UstrdElement
+            
+            
+            End If
+    Next i
+            
+     
+    'Enregistrement du fichier XML
+    xmlDoc.Save "C:\sepa_virement.xml"
+    
+        'Affichage d'un message de confirmation
+    MsgBox "Le fichier XML a été généré avec succès !"
+    End With
+    End Sub
